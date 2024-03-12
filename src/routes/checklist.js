@@ -4,24 +4,35 @@ const router = express.Router();
 const Checklist = require('../models/checklist');
 
 router.get('/', async (req, res) => {
-    const checklists = await Checklist.find({})
-    res.json(checklists);
+    try {
+        const checklist = await Checklist.find({});
+        res.status(200).json(checklist);
+    } catch (error) {
+        res.status(500).json(error);
+    }
 });
 
 router.post('/', async (req, res) => {
     let { name } = req.body;
 
     try {
-        let checklist = await Checklist.create({ name });
-        res.status(200).json(checklist);
+        let checklists = await Checklist.create({ name });
+        res.status(200).json(checklists);
     } catch (error) {
         res.status(422).json(error);
     }
 });
 
-router.get('/:id', (req, res) => {
-    console.log(req.params.id);
-    res.send(`ID: ${req.params.id}`);
+router.get('/:id', async (req, res) => {
+    const id = req.params.id;
+
+    try {
+        const checklist = await Checklist.findById(id);
+        res.status(200).json(checklist);
+    } catch (error) {
+        res.status(422).json(error);
+    }
+   
 });
 
 router.put('/:id', (req, res) => {
